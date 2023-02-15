@@ -150,8 +150,8 @@
   programs.zsh = {
     enable = true;
     syntaxHighlighting.enable = true;
-    ohMyZsh.enable = true;
   };
+  programs.starship.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -169,11 +169,12 @@
      alacritty
      neovim
      git
+     gh
 
      # nvidia-vaapi-driver
 
      # languages
-     # rustup
+     rustup
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
