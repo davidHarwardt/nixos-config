@@ -32,6 +32,7 @@
         useOSProber = true;
     };
   };
+  boot.supportedFilesystems = [ "ntfs" ];
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -108,19 +109,25 @@
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
+  # hardware.pulseaudio.systemWide = true;
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
+    # alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    # jack.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
+
+  # programs.noisetorch = {
+  #   enable = true;
+  # };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -151,7 +158,13 @@
     enable = true;
     syntaxHighlighting.enable = true;
   };
-  programs.starship.enable = true;
+
+  programs.starship = {
+    enable = true;
+    settings = {
+      add_newline = false;
+    };
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -164,17 +177,45 @@
      htop
      neofetch
      pciutils
+     # nerdfonts
 
      # dev tools
      alacritty
      neovim
+     vimPlugins.packer-nvim
+     lapce
+     craftos-pc
+
      git
      gh
+     mold
+     imhex
+     ripgrep
+     discord
+     prismlauncher
+
+     # libs
+     pkg-config-unwrapped
+     alsa-lib
 
      # nvidia-vaapi-driver
 
      # languages
+     llvm
+     llvmPackages.libcxxClang
      rustup
+     cargo-watch
+     rust-analyzer
+
+     nodejs
+     deno
+     nodePackages.svelte-language-server
+     nodePackages.vscode-html-languageserver-bin
+     nodePackages.vscode-css-languageserver-bin
+  ];
+
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -191,8 +232,10 @@
   # services.openssh.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
+
+  networking.firewall.allowedTCPPorts = [ 25565 ];
+  networking.firewall.allowedUDPPorts = [ 25565 ];
+
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
