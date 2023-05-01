@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
-
+# let unstable = import <nixos-unstable> { config = { allowUnfree = true; }; }; in
 {
     imports = [ # Include the results of the hardware scan.
         ./hardware-configuration.nix
@@ -154,7 +154,7 @@
         ];
     };
     users.defaultUserShell = pkgs.zsh;
-    environment.shells = with pkgs; [ zsh ];
+    environment.shells = with pkgs; [ zsh bash ];
 
     # environment.variables = {
     #   LIBVA_DRIVER_NAME = "nvidia";
@@ -173,18 +173,34 @@
         enable = true;
     };
 
+    programs.streamdeck-ui = {
+        enable = false;
+    };
+
+    # docker osx: https://nixos.wiki/wiki/OSX-KVM
+    virtualisation.libvirtd.enable = true;
+    users.extraUsers.david.extraGroups = [ "libvirtd" ];
+    boot.extraModprobeConfig = ''
+        options kvm_intel nested=1
+        options kvm_intel emulate_invalid_guest_state=0
+        options kvm ignore_msrs=1
+    '';
+
+    services.udev.packages = [ pkgs.streamdeck-ui ];
+
     # Allow unfree packages
     nixpkgs.config.allowUnfree = true;
 
     # List packages installed in system profile. To search, run:
     # $ nix search wget
     environment.systemPackages = with pkgs; [
-        vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+        vim
         wget
         htop
         neofetch
         pciutils
-        # nerdfonts
+        uxplay
+        thokr
 
         # dev tools
         alacritty
@@ -193,6 +209,9 @@
         lapce
         craftos-pc
         texlive.combined.scheme-full
+        docker
+        gnumake
+        just
 
         git
         gh
@@ -206,20 +225,19 @@
         pkg-config-unwrapped
         alsa-lib
         easyeffects
-        uxplay
         rustdesk
         watchexec
         opendrop
         openssl
-
-        # nvidia-vaapi-driver
+        owl
 
         # languages
         llvm
         llvmPackages.libcxxClang
-        rustup
-        cargo-watch
-        rust-analyzer
+        libgccjit
+
+        rustup cargo-watch rust-analyzer
+        go gopls
     
         nodejs
         deno
@@ -227,6 +245,10 @@
         nodePackages.typescript-language-server
         nodePackages.vscode-html-languageserver-bin
         nodePackages.vscode-css-languageserver-bin
+
+        # unstable
+        # unstable.typst
+        # unstable.typst-lsp
     ];
 
     fonts.fonts = with pkgs; [
@@ -257,6 +279,14 @@
         7100
         7000
         7001
+        5001
+
+        # webdev
+        9000
+        3000
+        3001
+        3002
+        3003
     ];
     networking.firewall.allowedUDPPorts = [
         # minecraft
