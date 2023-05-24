@@ -12,11 +12,6 @@
     nix.package = pkgs.nixFlakes;
     nix.extraOptions = "experimental-features = nix-command flakes";
 
-    nix.settings = {
-        substituters = ["https://hyprland.cachix.org"];
-        trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
-    };
-
     # use grub bootloader
     boot.loader = {
         efi = {
@@ -77,16 +72,12 @@
             # };
 
             gdm.enable = true;
-            # sddm.enable = true;
         };
 
         desktopManager.gnome.enable = true;
-        # desktopManager.plasma5.enable = true;
 
         videoDrivers = [ "nvidia" ];
     };
-
-    # xdg.portal.wlr.enable = true;
 
     # nvidia drivers
     hardware.opengl = {
@@ -94,13 +85,6 @@
         # driSupport = true;
         # driSupport32Bit = true;
     };
-
-    # hardware.nvidia = {
-    #   open = true;
-    #   modesetting.enable = true;
-    #   package = config.boot.kernelPackages.nvidiaPackages.latest; # could use latest
-    #   # powerManagement.enable = false;
-    # };
 
     # Enable CUPS to print documents.
     services.printing.enable = true;
@@ -124,7 +108,6 @@
     services.pipewire = {
         enable = true;
         alsa.enable = true;
-        # alsa.support32Bit = true;
         pulse.enable = true;
         # If you want to use JACK applications, uncomment this
         # jack.enable = true;
@@ -133,10 +116,6 @@
         # no need to redefine it in your config for now)
         #media-session.enable = true;
     };
-
-    # programs.noisetorch = {
-    #   enable = true;
-    # };
 
     # Enable touchpad support (enabled default in most desktopManager).
     # services.xserver.libinput.enable = true;
@@ -156,14 +135,6 @@
     users.defaultUserShell = pkgs.zsh;
     environment.shells = with pkgs; [ zsh bash ];
 
-    # environment.variables = {
-    #   LIBVA_DRIVER_NAME = "nvidia";
-    #   XDG_SESSION_TYPE = "wayland";
-    #   GBM_BACKEND = "nvidia-drm";
-    #   __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    #   WLR_NO_HARDWARE_CURSORS = "1";
-    # };
-
     programs.zsh = {
         enable = true;
         syntaxHighlighting.enable = true;
@@ -171,10 +142,10 @@
 
     programs.starship = {
         enable = true;
-    };
 
-    programs.streamdeck-ui = {
-        enable = false;
+        settings = {
+
+        };
     };
 
     # docker osx: https://nixos.wiki/wiki/OSX-KVM
@@ -185,8 +156,6 @@
         options kvm_intel emulate_invalid_guest_state=0
         options kvm ignore_msrs=1
     '';
-
-    services.udev.packages = [ pkgs.streamdeck-ui ];
 
     # Allow unfree packages
     nixpkgs.config.allowUnfree = true;
@@ -201,10 +170,12 @@
         pciutils
         uxplay
         thokr
+        geogebra
 
         # dev tools
         alacritty
         neovim
+        xclip # nvim clipboard support
         vimPlugins.packer-nvim
         lapce
         craftos-pc
