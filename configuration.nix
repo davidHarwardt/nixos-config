@@ -20,7 +20,7 @@
         };
         grub = {
             enable = true;
-            version = 2;
+            # version = 2;
             efiSupport = true;
             device = "nodev";
             useOSProber = true;
@@ -57,26 +57,45 @@
         LC_TIME = "de_DE.UTF-8";
     };
 
-    # Enable the X11 windowing system.
     services.xserver = {
         enable = true;
         layout = "us";
-        xkbVariant = "";
 
         displayManager = {
-            startx.enable = true;
-            # gdm = {
-            #   enable = true;
-            #   wayland = true;
-            #   nvidiaWayland = true;
-            # };
+            gdm = {
+                enable = true;
+                wayland = true;
+            };
 
-            gdm.enable = true;
+            defaultSession = "hyprland";
         };
+    };
 
-        desktopManager.gnome.enable = true;
+    # Enable the X11 windowing system.
+    # services.xserver = {
+    #     enable = true;
+    #     layout = "us";
+    #     xkbVariant = "";
 
-        videoDrivers = [ "nvidia" ];
+    #     displayManager = {
+    #         startx.enable = true;
+    #         gdm = {
+    #           enable = true;
+    #           wayland = true;
+    #           # nvidiaWayland = true;
+    #         };
+
+    #         # gdm.enable = true;
+    #     };
+
+    #     desktopManager.gnome.enable = true;
+
+    #     videoDrivers = [ "nvidia" ];
+    # };
+
+    programs.hyprland = {
+        enable = true;
+        nvidiaPatches = true;
     };
 
     # nvidia drivers
@@ -128,7 +147,6 @@
 
         packages = with pkgs; [
             firefox
-            kate
             thunderbird
         ];
     };
@@ -171,6 +189,7 @@
         uxplay
         thokr
         geogebra
+        playerctl
 
         # dev tools
         alacritty
@@ -191,6 +210,7 @@
         ripgrep
         discord
         prismlauncher
+        jdk17
     
         # libs
         pkg-config-unwrapped
@@ -217,14 +237,26 @@
         nodePackages.vscode-html-languageserver-bin
         nodePackages.vscode-css-languageserver-bin
 
-        # unstable
-        # unstable.typst
-        # unstable.typst-lsp
+        gnome.nautilus
+
+        # wayland
+        swww            # wallpapers
+        tofi            # launcher
+        # todo          # screenshots
+        hyprpicker      # colorpicker
+        eww-wayland     # widgets / bar
+
+        mako libnotify  # notifications
     ];
 
-    fonts.fonts = with pkgs; [
-        (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
-    ];
+
+    fonts = {
+        fonts = with pkgs; [
+            (nerdfonts.override { fonts = [ "SourceCodePro" ]; })
+        ];
+
+        # todo: add default fonts
+    };
 
     # Some programs need SUID wrappers, can be configured further or are
     # started in user sessions.
@@ -278,6 +310,7 @@
     # this value at the release version of the first install of this system.
     # Before changing this value read the documentation for this option
     # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-    system.stateVersion = "22.11"; # Did you read the comment?
+
+    system.stateVersion = "22.11";
 }
 
